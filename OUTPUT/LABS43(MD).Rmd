@@ -1,0 +1,136 @@
+######################################################
+---_________________________________________________
+title: "LABS_43"
+author: "JESSICA PAOLA AGUILAR SERVIN"
+date: "2023-03-08"
+output: html_document
+---__________________________________________________
+#####################################################
+
+Laboratorio - MAPA DE CALOR -T?RMICO- with pheatmap.DATOS GENETICOS TOMADOS DE Sahir Bhatnagar.PRACTICA DE ITCODERS
+
+Objetivo: Realizar un heatmap con datos geneticos 
+---------------------------------------------------------------------------
+Instalar paqueterias
+```{r}
+library(pheatmap)
+```
+
+
+importar datos
+file.choose()
+```{r}
+genes <- as.matrix (read.csv ("C:\\Users\\gusta\\OneDrive\\Documents\\GitHub\\JPAS_LABS43\\INPUT\\T4_PRETTYHEATMAP\\heatmap_data.csv", sep = ",",
+    header= T,
+    row.names= 1))
+
+annotation_col <- (read.csv ("C:\\Users\\gusta\\OneDrive\\Documents\\GitHub\\JPAS_LABS43\\INPUT\\T4_PRETTYHEATMAP\\annotation_col.csv",
+                              header= T,
+                              row.names= 1)) 
+
+annotation_row <- (read.csv ("C:\\Users\\gusta\\OneDrive\\Documents\\GitHub\\JPAS_LABS43\\INPUT\\T4_PRETTYHEATMAP\\annotation_row.csv",
+                             header= T,
+                             row.names= 1)) 
+```
+
+visualizar tablas generales
+```{r}
+head(genes)
+head (annotation_col)
+head (annotation_row)
+```
+
+CREAMOS MAPA DE CALOR. Plotting with pheatmap!
+```{r}
+pheatmap(genes)
+```
+
+MODIFICAMOS MAPA DE CALOR. change font. Default is clustering rows and columns
+```{r}
+pheatmap(genes, frontsize=6)
+```
+
+QUITAMOS ENDOGRAMA DEL EJE DE LAS X. cluster by gene - groups of similar genes----LOS GENES ESTAN EN LOS RENGLONES. POR DEFAULT CLUSTEA LOS RENGLONES
+```{r}
+pheatmap(genes, frontsize=6, cluster_rows = T, cluster_cols = F)
+```
+
+ENDOGRAMA DEL EJE DE LAS Y- cluster by patient - groups of similar patients.DEBES HACER QUE LAS COLUMNAS SE TRANFOMEN A RENGLONES
+
+```{r}
+pheatmap(genes, frontsize=6, cluster_rows = F, cluster_cols = T)
+```
+
+AMBOS ENDOGRAMAS COMO LA VERSIÓN ORIGINAL
+usually order by both
+```{r}
+pheatmap(genes, frontsize=6, cluster_rows = T, cluster_cols = T)
+```
+
+seeing some patterns emerge - but what do they mean? Great time to add annotation to our plot
+
+```{r}
+pheatmap(genes, frontsize=6, cluster_rows = F, cluster_cols = T, annotation_row = annotation_row)
+```
+
+add to row first, see that genes are clustering according to the pathways they belong to
+```{r}
+pheatmap(genes, frontsize=6, cluster_rows = F, cluster_cols = T, annotation_row = annotation_row, annotation_col= annotation_col)
+```
+
+GRAFICO COMPLETO G1 AGREGANDO UN TITULO
+```{r}
+pheatmap(genes, frontsize=6, cluster_rows = F, cluster_cols = T, annotation_row = annotation_row, annotation_col= annotation_col, treeheight_row = 0, treeheight_col = 0, main = "EXPRESIÓN GENÉTICA")
+
+```
+
+TOMANDO UNA PARTE DE LA MUESTRA ORIGINAL
+GRAFICO QUITANDO CLUSTERS (ARBOLES DE AGRUPACI?N-DENDOGRAMAS)
+take a smaller subset 
+```{r}
+SUB <- genes [c(1:5, 55:60), c(1:5, 20:35, 55:60)]
+```
+
+
+con subset 1 (COPIAR G1)
+```{r}
+pheatmap(SUB, frontsize=6, cluster_rows = F, cluster_cols = T, annotation_row = annotation_row, annotation_col= annotation_col, treeheight_row = 0, treeheight_col = 0, main = "EXPRESIÓN GENÉTICA")
+```
+
+
+con subset 2 -- DESPLEGAR VALORES
+```{r}
+pheatmap(SUB, frontsize=6, cluster_rows = F, cluster_cols = T, annotation_row = annotation_row, annotation_col= annotation_col, treeheight_row = 0, treeheight_col = 0, main = "EXPRESIÓN GENÉTICA", frontsize=8, annotation_legend = F, display_numbers = T, fontsize_number = 6)
+```
+
+
+con color
+```{r}
+pheatmap(SUB, frontsize=6, cluster_rows = F, cluster_cols = T, annotation_row = annotation_row, annotation_col= annotation_col, treeheight_row = 0, treeheight_col = 0, main = "EXPRESIÓN GENÉTICA", frontsize=8, annotation_legend = F, display_numbers = T, fontsize_number = 6)
+```
+
+
+viridis,
+library(viridis)
+pheatmap(SUB, frontsize=6, cluster_rows = F, cluster_cols = T, annotation_row = annotation_row, annotation_col= annotation_col, treeheight_row = 0, treeheight_col = 0, main = "EXPRESIÓN GENÉTICA", frontsize=8, annotation_legend = F, display_numbers = T, fontsize_number = 6, col= viridis(option = "plasma") (6))
+
+ELEMENTOS ADICIONALES
+DISTANCIA ENTRE LOS GENES
+```{r}
+dist(SUB)
+```
+
+
+CORRELACIÓN DE LOS DATOS DE PACIENTES
+```{r}
+pheatmap(cor(SUB))
+```
+
+
+MATRIZ TRANSPUESTA Y MAPA NUEVO DE NO GENES
+```{r}
+trans <- t(SUB)
+head(trans)
+pheatmap(cor(trans))
+```
+
